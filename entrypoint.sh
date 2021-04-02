@@ -10,11 +10,17 @@ function main() {
 
   ACCOUNT_URL="$INPUT_ACCOUNT_ID.dkr.ecr.$INPUT_REGION.amazonaws.com"
 
+  tags="${INPUT_TAGS:-latest}" 
+  create_repo="${INPUT_CREATE_REPO:-false}"
+  dockerfile="${INPUT_DOCKERFILE:-Dockerfile}"
+  extra_build_args="${INPUT_EXTRA_BUILD_ARGS:-}"
+  path="${INPUT_PATH:-.}"
+
   aws_configure
   login
-  docker_build $INPUT_TAGS $ACCOUNT_URL
-  create_ecr_repo $INPUT_CREATE_REPO
-  docker_push_to_ecr $INPUT_TAGS $ACCOUNT_URL
+  docker_build $tags $ACCOUNT_URL
+  create_ecr_repo $create_repo
+  docker_push_to_ecr $tags $ACCOUNT_URL
 }
 
 function sanitize() {
@@ -55,7 +61,7 @@ function docker_build() {
     docker_tag_args="$docker_tag_args -t $2/$INPUT_REPO:$tag"
   done
 
-  docker build $INPUT_EXTRA_BUILD_ARGS -f $INPUT_DOCKERFILE $docker_tag_args $INPUT_PATH
+  docker build $extra_build_args -f $dockerfile $docker_tag_args $path
   echo "== FINISHED DOCKERIZE"
 }
 
