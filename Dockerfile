@@ -6,8 +6,7 @@ RUN apk update \
     && apk upgrade \
     && apk add --no-cache --update python3 py-pip coreutils \
     && rm -rf /var/cache/apk/* \
-    && pip install awscli==1.19.43 \
-    && apk --purge -v del py-pip
+    && pip install awscli==1.19.43
 
 ADD entrypoint.sh /entrypoint.sh
 
